@@ -1,0 +1,106 @@
+
+import pandas as pd
+
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import confusion_matrix, accuracy_score
+df = pd.read_csv('train.csv')
+print(df.tail())
+
+
+df.drop(['id', 'bdate', 'has_photo', 'has_mobile', 'followers_count', 'graduation', 'city', 'last_seen', 'occupation_type', 'occupation_name', 'career_start', 'career_end', 'people_main', 'life_main', 'langs', 'education_status', 'relation', 'education_form'],axis = 1, inplace = True)
+
+print(df.info())
+
+
+grouped = df.groupby('sex').size()
+grouped.plot(kind='pie', startangle=90, figsize=(8, 8))
+plt.title('1 - женщины, 2 - мужчины')
+plt.axis('equal')
+plt.show()
+
+X = df.drop('result', axis = 1)
+y = df['result']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25)
+
+
+
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train)
+X_test = sc.transform(X_test)
+
+
+classifier = KNeighborsClassifier(n_neighbors = 5)
+classifier.fit(X_train, y_train)
+
+
+y_pred = classifier.predict(X_test)
+print('Процент правильно предсказанных исходов:', accuracy_score(y_test, y_pred) * 100)
+print('Confusion matrix:')
+print(confusion_matrix(y_test, y_pred))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#grouped = df.groupby(['sex']).size().unstack()
+#for ressult in grouped.index:
+#    ressult_data = grouped.loc[ressult].dropna()
+#    uhddd = ressult_data.sum()  
+#    ressult_data.plot(kind='pie', startangle=90, figsize=(8, 8))
+#    plt.title(f' 1 женщины, 2 мужчины: {ressult}. всего человек: {uhddd} ')
+#    plt.axis('equal') 
+#    plt.show()
+#df = pd.get_dummies(df, columns=['education_form'])
+#
+#
+#scaler = StandardScaler()
+#x_train_scaled = scaler.fit_transform(x_train)
+#x_test_scaled = scaler.transform(x_test)
+#
+#knn = KNeighborsClassifier(n_neighbors=5)
+#knn.fit(x_train_scaled, y_train)
+#
+#y_pred = knn.predict(x_test_scaled)
+#accuracy = accuracy_score(y_test, y_pred)
+#confusion = confusion_matrix(y_test, y_pred)
+#print("Accuracy:", accuracy)
+#print("Confusion Matrix:")
+#print(confusion)
+
+#print(df.groupby(by = 'sex')['result'].mean())
+
+
+
+
+
+
+
+
